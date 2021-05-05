@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import {React,Fragment,useState} from 'react'
 import {Redirect,Link} from 'react-router-dom'
 import axios from 'axios'
 
@@ -23,7 +23,7 @@ window.location.reload(false)
   const like=[]
   
 const submit=()=>{
-  axios.post("http://localhost:3002/post",{id,name,mail,date,post,md,like,share:""}).then(response=>{
+  axios.post("https://repeated-fir-promotion.glitch.me/post",{id,name,mail,date,post,md,like,share:""}).then(response=>{
     if(response.data.err){
       setAlert(response.data.err)
     }else{
@@ -40,7 +40,7 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
   }
   else{
   return(
-    <div>
+    <>
  <nav id="bar">
 <center>
 <button onClick={logout} id="btn-2">log out</button>
@@ -59,7 +59,7 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
 {badalert?<h4 id="alert">{badalert}</h4>:<h4></h4>}
   </center>
   
-    </div>
+    </>
     )
 }
   

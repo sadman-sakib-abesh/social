@@ -4,7 +4,7 @@ import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
 import ReactHashtag from "react-hashtag";
 
-
+ 
 const Feed=()=>{
   
 const d=new Date()
@@ -27,14 +27,18 @@ const d=new Date()
   
   useEffect(()=>{
     
-    axios.get("http://localhost:3002/newsfeed").then(response=>{
+    axios.get("https://repeated-fir-promotion.glitch.me/newsfeed").then(response=>{
       setPosts(response.data)
     })
 })
   
+const load=(a,b)=>{
+  window.location.replace(`/#/Other?_name_=${a}&_id_=${b}`)
+}
+  
   
   const like=(e)=>{
-    axios.post("http://localhost:3002/like",{id,name,ema:e}).then(response=>{
+    axios.put("https://repeated-fir-promotion.glitch.me/like",{id,name,ema:e}).then(response=>{
       
 
   })
@@ -51,10 +55,24 @@ document.getElementById("bar2").style.display="none"
 
 
 const share=(e,b)=>{
-  axios.post("http://localhost:3002/share",{id,name,mail,date,like:[],share:e}).then(response=>{
+  axios.post("https://repeated-fir-promotion.glitch.me/share",{id,name,mail,date,like:[],share:e}).then(response=>{
     alert(response.data)
     })
 }
+
+
+const book=(a,b)=>{
+  axios.post("https://repeated-fir-promotion.glitch.me/bookmark",{id,_id_:a,name:b}).then(response=>{
+    
+    alert(response.data)
+  })
+  
+  
+}
+
+
+
+
 
 
   
@@ -74,32 +92,33 @@ const share=(e,b)=>{
   
   <div id="bar2">
   <span id="white" class="far fa-times-circle" onClick={hide}></span>
-  <br/><br/>
+  <br/><br/><br/>
   {liked.map(res=>
   <div>
-  <Link id="b" to={`/Other?_name_=${res.name}&_id_=${res.id}`}>{res.name}</Link>&nbsp;&nbsp;&nbsp;<span id="like2" class="fa fa-heart"></span><br/>
+  <Link onClick={()=>load(res.name,res.id)} id="b" to={`/Other?_name_=${res.name}&_id_=${res.id}`}>{res.name}</Link>&nbsp;&nbsp;&nbsp;<span id="like2" class="fa fa-heart"></span><br/>
   </div>
   )}
   </div>
    <br />
     <br/>
-  
+  <br/><br/>
   {posts.map(record=>
 
   <div key={record._id}>
   <div id={record._id}/>
   <br/>
    <div id="post">
-  <b id="click"> <Link id="b" to={`/Other?_name_=${record.name}&_id_=${record.id}`}>{record.name}</Link></b>
+  <b id="click"> <Link id="b" onClick={()=>load(record.name,record.id)} to={`/Other?_name_=${record.name}&_id_=${record.id}`}>{record.name}</Link></b>
 <span id="date">{record.date}</span>
    <div id="post-in">
 {record.share===""?<div>
+ 
    <ReactHashtag renderHashtag={(hashtagValue) => (
-                <div className="hashtag">{hashtagValue}</div>
+                <span className="hashtag">{hashtagValue}</span>
             )}>
-          {record.post}
+        {record.post}
    </ReactHashtag>
-   
+  
    {record.md===""?<br/>:<div id="md"><ReactMarkdown>{record.md}</ReactMarkdown></div>}
    </div>:<div>
    <div id="shared">
@@ -119,14 +138,14 @@ const share=(e,b)=>{
    
 
   
-<i class="fa fa-comment" id="comment"></i>
+<Link class="fa fa-comment" id="comment" to={`/Comment?_id_=${record._id}`}></Link>
 
-<i class="far fa-bookmark" id="comment"></i>
+<i class="far fa-bookmark" onClick={()=>book(record._id,record.name)} id="comment"></i>
 
-{record.share.name===name || record.name===name || JSON.stringify(record.share).includes(record.share.name)?<span></span>:<i class="fa fa-share" id="comment"onClick={()=>share(record)}></i>}
+{record.share.id===id || record.id===id || JSON.stringify(record.share).includes(record.share.id)?<span></span>:<i class="fa fa-share" id="comment"onClick={()=>share(record)}></i>}
 
 
-{JSON.stringify(record.like).includes(name)?<span id="like" onClick={()=>like(record._id)} class="fa fa-heart"></span>:<span id="like_w" onClick={()=>like(record._id)} class="far fa-heart"></span>}
+{JSON.stringify(record.like).includes(id)?<span id="like" onClick={()=>like(record._id)} class="fa fa-heart"></span>:<span id="like_w" onClick={()=>like(record._id)} class="fa fa-heart-o"></span>}
 &nbsp;&nbsp;<span id="date" onClick={()=>letliked(record.like)}>{record.like.length}</span>
 
 

@@ -21,10 +21,11 @@ i{
   border:10px solid #00000000;
 }
 #project{
+  float:left;
 color:white;
   font-size:30px;
 border-left:20px solid #00000000;
-border-top:5px solid #00000000;
+border-top:10px solid #00000000;
 text-decoration:none;
 }
 #trophy{
@@ -33,30 +34,34 @@ color:white;
 border-left:40px solid #00000000;
 border-top:10px solid #00000000;
 text-decoration:none;
+float:left;
 }
 
 #plus{
 color:white;
   font-size:30px;
-border-top:5px solid #00000000;
-border-left:40px solid #00000000;
 text-decoration:none;
+border-top:10px solid #00000000;
+
+
 }
 
 #bookmark{
+  float:right;
 color:white;
 font-size:30px;
-border-left:40px solid #00000000;
-border-top:5px solid #00000000;
+border-right:40px solid #00000000;
+border-top:10px solid #00000000;
 text-decoration:none;
 }
 
 #user{
 color:white;
 font-size:30px;
-border-left:40px solid #00000000;
-border-top:5px solid #00000000;
+border-top:10px solid #00000000;
+border-right:10px solid #00000000;
 text-decoration:none;
+float:right;
 }
 #bar{
   background-color:#000515;
@@ -163,9 +168,10 @@ border-radius:5px;
 }
 #post-in{
   color:white;
+  font-size:17px;
   white-space: pre-wrap;
   overflow-y:scroll;
-  height:240px;
+  height:230px;
   width:100%;
   border-bottom:3px solid white;
   border-top:1px solid white;
@@ -175,10 +181,12 @@ border-radius:5px;
 }
 #date{
   color:gray;
-  font-size:10px;
+  font-size:12px;
   float:right;
 }
 #comment{
+  color:white;
+  text-decoration:none;
   font-size:20px;
   border-bottom:15px solid #00000000;
 border-left:10px solid #00000000;
@@ -211,10 +219,9 @@ display:none;
 #white{
   color:white;
   font-size:20px;
-  float:right;
-  border-top:20px solid #00000000;
-  border-right:20px solid #00000000;
-  
+  border-top:10px solid #00000000;
+  border-left:10px solid #00000000;
+  position:fixed;
 }
 b{
   color:white;
@@ -222,6 +229,7 @@ b{
 #b{
   text-decoration:none;
   color:white;
+  font-size:18px;
 }
 #like2{
 font-size:20px;
@@ -258,6 +266,7 @@ background-color:#2f2f40;
 
 #o_name{
   color:white;
+  font-size:33px;
 }
 #shared{
   border-bottom:1px solid white;
@@ -297,4 +306,115 @@ font-size:20px;
   border-bottom:15px solid #00000000;
 border-left:10px solid #00000000;
   color:#fb6969;
+}
+
+#serch{
+color:white;
+float:right;
+text-decoration:none;
+font-size:20px;
+border-right:10px solid #00000000;
+border-top:15px solid #00000000;
+border-left:10px solid #00000000;
+height:49px;
+
+}
+
+#cmnt-in{
+  border:0px;
+ background-color:#00000000;
+  color:white;
+  border:2px solid white;
+  border-radius:15px;
+  font-size:20px;
+  width:200px;
+}
+#cmnt-in:hover{
+background-color:#00000000;
+  color:white;
+  border-radius:15px;
+  font-size:20px;
+  border:2px solid white;
+width:250px;
+transition:0.6s;
+}
+#com-in{
+position:fixed;
+  bottom:60px;
+  left:5px;
+}
+#btn-in{
+  background-color:white;
+  color:black;
+  border-radius:10px;
+  font-size:20px;
+  border:0px;
+box-shadow:0 0px 4px 1px white;
+}
+#admin{
+  color:rgb(154,245,206);
+}
+#admin-2{
+  color:rgb(80,193,232);
+}
+
+#cmnt-post{
+  background-color:rgb(36,39,54);
+  border-radius:5px;
+  width:80%;
+  color:white;
+whitespace:pre-wrap;
+}
+
+
+#search-in{
+  border:0px;
+ background-color:rgb(17,28,44);
+  color:white;
+  border:0px;
+  border-radius:5px;
+  font-size:20px;
+  width:90%;
+
+  flex:center;
+}
+#item{
+  background-color:white;
+  color:black;
+  font-size:22px;
+  border:0px;
+  width:15px;
+  border-radius:5px;
+}
+
+#serch-i{
+color:white;
+text-decoration:none;
+font-size:20px;
+border-top:10px solid #00000000;
+border-left:10px solid #00000000;
+height:49px;
+
+}
+
+#card{
+  color:white;
+  background-color:rgb(12,17,36);
+  width:100%;
+  height:80px;
+}
+
+#book{
+color:white;
+font-size:15px;
+}
+#a{
+  text-decoration:underline;
+}
+
+
+#note-2{
+  color:white;
+  float:right;
+  font-size: 15px;
 }

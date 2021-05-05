@@ -19,7 +19,7 @@ const Password=()=>{
   
   const send=()=>{
     
-  axios.post("http://localhost:3002/otp",{email,"send":"true"})
+  axios.post("https://repeated-fir-promotion.glitch.me/otp",{email,"send":"true"})
   .then(response=>{
     if(response.data.err){
       setBad(response.data.err)
@@ -40,7 +40,7 @@ const Password=()=>{
   
   const sendOtp=()=>{
     
-  axios.post("http://localhost:3002/otp",{otp,send:"false"})
+  axios.post("https://repeated-fir-promotion.glitch.me/otp",{otp,send:"false"})
   .then(response=>{
     
 if(response.data.err){
@@ -64,7 +64,7 @@ if(response.data.err){
       if(password.length>=8){
       
       
-  axios.post("http://localhost:3002/otp",{email,Hash,send:"false2"})
+  axios.post("https://repeated-fir-promotion.glitch.me/otp",{email,Hash,send:"false2"})
   .then(response=>{
 if(response.data.err){
       setBad(response.data.err)

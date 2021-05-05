@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.css';
 import $ from 'jquery'
-import {BrowserRouter as Router,Route,Switch,Link} from 'react-router-dom'
+import {HashRouter as Router,Switch,Route,Link} from 'react-router-dom'
 import Login from './components/Login'
 import Signup from './components/Signup'
 import Bookmark from './components/Bookmark'
@@ -14,6 +14,9 @@ import Password from './components/Password'
 import Other from './components/Other'
 import Post from './components/Post'
 import header from './header.png'
+import Page from './components/page'
+
+
 
 $(document).ready(function(){
   $("#menu").click(function(){
@@ -26,16 +29,22 @@ $(document).ready(function(){
 class App extends React.Component{
   
   
-  
+loade=()=>{
+  window.location.replace("/#/Profile")
+}
   render(){
   return (
-    <div className="App">
+    <div>
     <Router>
     <nav id="header">
     <img src={header} height="50px"/>
+
     <i id="menu"></i>
+<Link class="fa fa-search" id="serch" to="/Projects"></Link>
+  
     </nav>
-    <Switch>
+    <div>
+<Switch>
     <Route exact path="/" component={Feed}/>
     <Route path="/Signup" component={Signup}/>
     <Route path="/Login" component={Login}/>
@@ -46,18 +55,27 @@ class App extends React.Component{
     <Route path="/Notification" component={Notification}/>
     <Route path="/Post" component={Post}/>
     <Route path="/Password" component={Password}/>
-    
+
+
     <Route path="/Other" component={Other}/>
+    <Route path="/Page" component={Page}/>
     
+
 </Switch>
-  
+</div>
+<div>
  <nav id="footer">
+ <center>
 <Link to="/" id="project"></Link>
 <Link to="/Notification" id="trophy"></Link>
 <Link to="/Post" id="plus"></Link>
+
+<Link to="/Profile" onClick={this.loade} id="user"></Link>
 <Link to="/Bookmark" id="bookmark"></Link>
-<Link to="/Profile" id="user"></Link>
+
+</center>
   </nav>
+  </div>
     </Router>
     
      

@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import {React,useState,useEffect} from 'react'
 
 import {Link,Redirect} from 'react-router-dom'
 import axios from 'axios'
@@ -9,11 +9,11 @@ const Login=()=>{
   const [badalert,setAlert]=useState("")
  const [email,setEmail]=useState("")
   const [password,setPassword]=useState("")
-  
+  const [a,setA]=useState("")
   
   const login=()=>{
     
-  axios.post("http://localhost:3002/login",{email,password})
+  axios.post("https://repeated-fir-promotion.glitch.me/login",{email,password})
   .then(response=>{
     if(response.data.err){
       setAlert(response.data.err)
@@ -38,6 +38,18 @@ const Login=()=>{
   
   }
   
+  useEffect(()=>{
+    
+    axios.get("https://repeated-fir-promotion.glitch.me/con").then(response=>{
+      setA(response.data)
+    })
+    
+  })
+  
+  
+  
+  
+  
 if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
   return(
     <div>
@@ -47,7 +59,7 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
   </nav>
   <br /><br /><br />
   <br/>
-  
+  <span id="note">{a}</span>
   <center>
   <div id="form">
   <h3 id="sign">Log in</h3>

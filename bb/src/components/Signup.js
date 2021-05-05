@@ -1,4 +1,4 @@
-import {React,useState} from 'react'
+import {React,Fragment,useState} from 'react'
 import {Link,Redirect} from 'react-router-dom'
 import axios from 'axios'
 import passwordHash from 'password-hash'
@@ -25,8 +25,11 @@ const Signup = () => {
       if(name==="" && email===""){
       setAlert("**name and email can't be empty")
     }
+    else if(name.length>20){
+      setAlert("name is too long")
+    }
       else{
-    axios.post("http://localhost:3002/sign",{name,email,Hash,follower,following,bio,fb,li,tw})
+    axios.post("https://repeated-fir-promotion.glitch.me/sign",{name,email,Hash,follower,following,bio,fb,li,tw})
     .then(response=>{
   if(response.data.err){
     setAlert(response.data.err)
@@ -64,7 +67,7 @@ const Signup = () => {
   
   else{
   return(
-    <div>
+    <>
     <nav id="bar"></nav>
   
   <br/>
@@ -94,7 +97,7 @@ const Signup = () => {
   <br/>
 
   
-    </div>
+    </>
     )
 }
 }

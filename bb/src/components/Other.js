@@ -1,4 +1,4 @@
-import {React,useState,useEffect,createRef} from 'react'
+import {React,Fragment,useState,useEffect,createRef} from 'react'
 import {Redirect,Link,useLocation} from 'react-router-dom'
 import axios from 'axios'
 import queryString from 'query-string'
@@ -15,7 +15,7 @@ const [data,setData]=useState([])
 
 const name=localStorage.getItem("name")
   const id=localStorage.getItem("id")
-  const mail=localStorage.getItem("id")
+  const mail=localStorage.getItem("email")
   const {search}= useLocation()
   const {_name_,_id_}=queryString.parse(search );
   
@@ -26,7 +26,7 @@ window.location.reload(false)
   }
   
 const like=(e)=>{
-    axios.post("http://localhost:3002/like",{id,name,ema:e}).then(response=>{
+    axios.put("https://repeated-fir-promotion.glitch.me/like",{id,name,ema:e}).then(response=>{
       })
   }
   
@@ -42,31 +42,37 @@ document.getElementById("bar2").style.display="none"
 
 
 const share=(e,b)=>{
-  axios.post("http://localhost:3002/share",{id,name,mail,date,like:[],share:e}).then(response=>{
+  axios.post("https://repeated-fir-promotion.glitch.me/share",{id,name,mail,date,like:[],share:e}).then(response=>{
     alert(response.data)
     })
 }
 
 const follow=()=>{
-axios.post("http://localhost:3002/follow",{name,id,_name_,_id_}).then(response=>{
+axios.put("https://repeated-fir-promotion.glitch.me/follow",{name,id,_name_,_id_}).then(response=>{
     
     
     
     })
 }
 
+
+
 const load=(a,b)=>{
-  window.location.replace(`/Other?_name_=${a}&_id_=${b}`)
+  window.location.replace(`/#/Other?_name_=${a}&_id_=${b}`)
 }
+
+
+
+
 
 
 
 useEffect(()=>{
     
-    axios.get("http://localhost:3002/profile_o/"+_id_).then(response=>{
+    axios.get("https://repeated-fir-promotion.glitch.me/profile_o/"+_id_).then(response=>{
       setPosts(response.data)
     })
-    axios.get("http://localhost:3002/profile_u/"+_id_).then(response=>{
+    axios.get("https://repeated-fir-promotion.glitch.me/profile_u/"+_id_).then(response=>{
      setData(response.data)
       //setFollowing(response.data.following)
       //setFollower(response.data.follower)
@@ -93,17 +99,20 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
 <button onClick={logout} id="btn-2">log out</button>
 </center>
   </nav>
-  <br/><br/><br/><span id="head">profile</span>
-  <h2 id="o_name">{_name_}</h2>
-  <br/>
+  <br/><br/><br/><br/><span id="head">profile</span>
+
   {
     data.map(record=><div>
+  <span id="o_name">{_name_}</span>&nbsp;
+<i id="admin-2" class={record.team}></i> &nbsp;
+<i id="admin" class={record.certificate}></i><br/><br/>
 &nbsp;
+
     <span id="note" onClick={()=>letliked(record.follower)}>follower:{record.follower.length}</span>&nbsp;&nbsp;&nbsp;<span id="note" onClick={()=>letliked(record.following)}>following:{record.following.length}</span>
 &nbsp;&nbsp;&nbsp;
 
 
-{record.name===name?<span></span>:<span>{JSON.stringify(record.follower).includes(id)?<button id="btn-3" onClick={follow}>following....<span class="fa fa-check" aria-hidden="true"></span></button>:<button id="btn-3" onClick={follow}>follow</button>}</span>}
+{record._id===id?<span></span>:<span>{JSON.stringify(record.follower).includes(id)?<button id="btn-3" onClick={follow}>following....<span class="fa fa-check" aria-hidden="true"></span></button>:<button id="btn-3" onClick={follow}>follow</button>}</span>}
 
 <br/>
 <br/>
@@ -132,7 +141,7 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
   
   <div id="bar2">
   <span id="white" class="far fa-times-circle" onClick={hide}></span>
-  <br/><br/>
+  <br/><br/><br/>
   {liked.map(res=>
   <div>
 <span id="b" class="fas fa-user-circle"></span>&nbsp;&nbsp;&nbsp;
@@ -154,7 +163,7 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
    <div id="post-in">
 {record.share===""?<div>
    <ReactHashtag renderHashtag={(hashtagValue) => (
-                <div className="hashtag">{hashtagValue}</div>
+                <span className="hashtag">{hashtagValue}</span>
             )}>
           {record.post}
    </ReactHashtag>
@@ -162,9 +171,9 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
    {record.md===""?<br/>:<div id="md"><ReactMarkdown>{record.md}</ReactMarkdown></div>}
    </div>:<div>
    <div id="shared">
-   <span class="fa fa-share"></span> from <b><Link id="b" to={`/Other?_name_=${record.share.name}&_id_=${record.share.id}`}>{record.share.name}</Link></b><span id="date">{record.share.date}</span></div>
+   <span class="fa fa-share"></span> from <b><Link onClick={()=>load(record.share.name,record.share.id)} id="b" to={`/Other?_name_=${record.share.name}&_id_=${record.share.id}`}>{record.share.name}</Link></b><span id="date">{record.share.date}</span></div>
    <ReactHashtag renderHashtag={(hashtagValue) => (
-                <div className="hashtag">{hashtagValue}</div>
+                <span className="hashtag">{hashtagValue}</span>
             )}>
           {record.share.post}
    </ReactHashtag>
@@ -178,14 +187,14 @@ if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
    
 
   
-<i class="fa fa-comment" id="comment"></i>
+<Link class="fa fa-comment" id="comment" to={`/Comment?_id_=${record._id}`}></Link>
 
 <i class="far fa-bookmark" id="comment"></i>
 
-{record.share.name===name || record.name===name || JSON.stringify(record.share).includes(record.share.name)?<span></span>:<i class="fa fa-share" id="comment"onClick={()=>share(record)}></i>}
+{record.share.id===id || record.id===id || JSON.stringify(record.share).includes(record.share.id)?<span></span>:<i class="fa fa-share" id="comment"onClick={()=>share(record)}></i>}
 
 
-{JSON.stringify(record.like).includes(name)?<span id="like" onClick={()=>like(record._id)} class="fa fa-heart"></span>:<span id="like_w" onClick={()=>like(record._id)} class="far fa-heart"></span>}
+{JSON.stringify(record.like).includes(id)?<span id="like" onClick={()=>like(record._id)} class="fa fa-heart"></span>:<span id="like_w" onClick={()=>like(record._id)} class="fa fa-heart-o"></span>}
 &nbsp;&nbsp;<span id="date" onClick={()=>letliked(record.like)}>{record.like.length}</span>
 
 

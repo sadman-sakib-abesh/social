@@ -11,6 +11,12 @@ const emailExistence=require("email-existence")
 const otpGenerator = require('otp-generator')
 const sessionStorage=require("./session")
 
+const d=new Date()
+  const date=d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()+" time-"+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
+  
+
+
+
 
 app.use(cors());
 
@@ -32,8 +38,9 @@ mongo.MongoClient.connect(url,{ useUnifiedTopology: true },(error,db)=>{
 const dbo=db.db("business");
   const user=dbo.collection("user");
   const post=dbo.collection("post");
-  const trophy=dbo.collection("trophy");
+  const notification=dbo.collection("trophy");
   const comment=dbo.collection("comment");
+  const bookmark=dbo.collection("bookmark");
   
     //workspace
     
@@ -243,7 +250,20 @@ transporter.sendMail(mailOptions, function(error, info){
  
  app.get("/newsfeed",(req,res)=>{
    
-   post.find({},{"date":1,_id:0}).sort({"date":-1}).toArray((err,data)=>{
+   post.find({},{"date":1,like:0}).sort({"date":-1}).toArray((err,data)=>{
+   if(err){
+     console.log("prob")
+   }
+   else{
+     res.send(data)
+   }
+   })
+ })
+ 
+ 
+ app.get("/newsfeed_i/:id_",(req,res)=>{
+   
+   post.findOne({_id:mongo.ObjectId(req.params["id_"])},(err,data)=>{
    if(err){
      console.log("prob")
    }
@@ -256,7 +276,7 @@ transporter.sendMail(mailOptions, function(error, info){
  
  
  //like****
- app.post("/like",(req,res)=>{
+ app.put("/like",(req,res)=>{
   post.findOne({_id:mongo.ObjectId(req.body.ema)},(err,data)=>{
    
 if(JSON.stringify(data.like).includes(req.body.id)){
@@ -279,6 +299,7 @@ post.updateOne({_id:mongo.ObjectId(req.body.ema)},{$push:{like:{id:req.body.id,n
            console.log(data.like)
          }
        })
+notification.insertOne({_id_:data.id,id:req.body.id,name:req.body.name,msg:"liked your post",date})
        
        
      }
@@ -311,10 +332,11 @@ post.insertOne(req.body,(err,info)=>{
   
       res.send("post shared on your timeline")
       
+      
     
   })
          
-         
+notification.insertOne({_id_:req.body._id_,id:req.body.id,name:req.body.name,msg:"shared your post",date})
        }
        
        
@@ -350,7 +372,7 @@ app.get("/profile_u/:_id_",(req,res)=>{
      if(err){
        console.log(err)
      }else{
-res.send([{"name":data.name,"follower":data.follower,"following":data.following ,"bio":data.bio,"fb":data.fb,"li":data.li,"tw":data.tw}])
+res.send([{"_id":data._id,"name":data.name,"follower":data.follower,"following":data.following ,"bio":data.bio,"fb":data.fb,"li":data.li,"tw":data.tw}])
     
     
      }
@@ -362,11 +384,11 @@ res.send([{"name":data.name,"follower":data.follower,"following":data.following 
  
  
  //follow*****
- app.post("/follow",(req,res)=>{
+ app.put("/follow",(req,res)=>{
 user.findOne({_id:mongo.ObjectId(req.body._id_)},(err,data)=>{
    if(JSON.stringify(data.follower).includes(req.body.id)){
      
-user.updateOne({_id:mongo.ObjectId(req.body._id_)},{$pull:{follower:{id:req.body.id,name:req.body.name}}},(err,info)=>{
+user.updateOne({_id:mongo.ObjectId(req.body._id_)},{$pull:{follower:{id:req.body.id}}},(err,info)=>{
          if(err){
          console.log(err)
          }else{
@@ -384,6 +406,9 @@ user.updateOne({_id:mongo.ObjectId(req.body.id)},{$pull:{following:{id:req.body.
      
    }
     else{
+      
+      
+  notification.insertOne({_id_:req.body._id_,id:req.body.id,name:req.body.name,msg:"started following you",date})
      
 user.updateOne({_id:mongo.ObjectId(req.body._id_)},{$push:{follower:{id:req.body.id,name:req.body.name}}},(err,info)=>{
          if(err){
@@ -410,6 +435,244 @@ user.updateOne({_id:mongo.ObjectId(req.body.id)},{$push:{following:{id:req.body.
  
 //other's id post
  
+ 
+ 
+ //save change
+app.put("/save",(req,res)=>{
+  user.updateOne({_id:mongo.ObjectId(req.body.id)},{$set:req.body},(err,data)=>{
+    if(err){
+      console.log(err)
+    }
+    else{
+      res.send("saved changes")
+    }
+  })
+  
+})
+ 
+ 
+ 
+ //save change
+ 
+ 
+  
+  
+  //del_post
+  
+  app.delete("/del/:_id",(req,res)=>{
+    post.deleteOne({_id:mongo.ObjectId(req.params["_id"])},(err,info)=>{
+      if(err){
+        console.log(err)
+      }else{
+        res.send("post deleted")
+      }
+})
+comment.deleteOne({_id_:req.params["_id"]},(err,info)=>{
+      if(err){
+        console.log(err)
+      }
+      
+      
+      
+    })
+    
+    
+  })
+  
+  
+  //del_post
+  
+  
+  
+  
+  
+  //comment
+  app.post("/comment",(req,res)=>{
+    comment.insertOne(req.body,(err,info)=>{
+      if(err){
+        console.log(err)
+      }else{
+        res.send("comment posted")
+      }
+    })
+  })
+  
+app.get("/comment-o/:_id",(req,res)=>{
+    comment.find({_id_:req.params["_id"]}).toArray((err,info)=>{
+      if(err){
+        console.log(err)
+      }else{
+        res.send(info)
+      }
+    })
+  })
+  
+  
+app.put("/like_cmnt",(req,res)=>{
+  comment.findOne({_id:mongo.ObjectId(req.body.ema)},(err,data)=>{
+   
+if(JSON.stringify(data.like).includes(req.body.id)){
+       comment.updateOne({_id:mongo.ObjectId(req.body.ema)},{$pull:{like:{id:req.body.id,name:req.body.name}}},(err,info)=>{
+         if(err){
+         console.log(err)
+         }else{
+           res.send("your reaction from this post is removed")
+         }
+       })
+       
+       
+     }
+else{
+comment.updateOne({_id:mongo.ObjectId(req.body.ema)},{$push:{like:{id:req.body.id,name:req.body.name}}},(err,info)=>{
+         if(err){
+         console.log()
+         }else{
+           res.send("you loved this post")
+           console.log(data.like)
+         }
+       })
+       
+       
+     }
+
+   })
+  
+   
+ }) 
+  
+  
+  
+  
+  //comment
+  
+  //search******
+  
+app.get("/search/:post",(req,res)=>{
+   
+   post.find({post:{$regex:".*"+req.params["post"]+"*."}},{"date":1,_id:0}).sort({"date":-1}).toArray((err,data)=>{
+   if(err){
+     console.log("prob")
+   }
+   else{
+     res.send(data)
+   }
+   })
+ })
+  
+app.get("/search_person/:name",(req,res)=>{
+   
+   user.find({name:{$regex:".*"+req.params["name"]+"*."}}).toArray((err,data)=>{
+   if(err){
+     console.log("prob")
+   }
+   else{
+     
+  res.send(data)
+   }
+   
+   
+   })
+ })
+  
+  
+  //search*****
+  
+  
+  
+  
+  
+  //notification********
+  
+  app.get("/notification/:_id",(req,res)=>{
+    
+    notification.find({_id_:req.params["_id"]},{"date":1}).sort({"date":-1}).toArray((err,data)=>{
+      if(err){
+        console.log(err)
+      }
+      else{
+        res.send(data)
+      }
+      
+    })
+    
+    
+    
+  })
+  
+  
+  
+  //notification********
+  
+  
+  
+  
+  //bookmark
+  
+app.post("/bookmark",(req,res)=>{
+  bookmark.findOne({id:req.body.id}).toArray((err,data)=>{
+    if(JSON.stringify(data).includes(req.body._id_)){
+bookmark.deleteOne({id:req.body.id,_id_:req.body._id_},(err,info)=>{
+    if(err){
+      console.log(err)
+    }else{
+      res.send("opened bookmark")
+    }
+    
+  })
+    }else{
+    
+    
+  
+  bookmark.insertOne(req.body,(err,info)=>{
+    if(err){
+      console.log(err)
+    }else{
+      res.send("bookmarked")
+    }
+    
+  })
+  
+  
+  
+    }
+  
+  
+  
+ }) 
+})
+
+
+
+app.get("/bookmarked/:id",(req,res)=>{
+  
+  bookmark.find({id:req.params["id"]}).toArray((err,data)=>{
+    
+    
+    if(err){
+      console.log(err)
+    }
+    else{
+      res.send(data)
+    }
+  })
+  
+  
+  
+  
+})
+  
+  
+  
+  
+  
+  
+  //bookmark
+  
+  
+  
+
+  
+  
   
   
   
@@ -419,8 +682,9 @@ user.updateOne({_id:mongo.ObjectId(req.body.id)},{$push:{following:{id:req.body.
     
     })
     
-    post.findOne({mail:"sadmansakibabesh@gmail.com"},(err,info)=>{
-    })
+    //user.findOne({email:"sadmansakibabesh@gmail.com"},(err,info)=>{
+    
+   // })
 
     
     //workspace

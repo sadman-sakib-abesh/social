@@ -1,16 +1,19 @@
-import {React,Fragment,useState,useEffect} from 'react'
-import {Link,BrowserRouter as Router,Redirect} from 'react-router-dom'
+import {React,useState,useEffect,createRef} from 'react'
+import {Link,BrowserRouter as Router,Redirect,useLocation} from 'react-router-dom'
 import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
 import ReactHashtag from "react-hashtag";
-
-
-const Projects=()=>{
+import queryString from 'query-string'
+ 
+const Page=()=>{
   
 const d=new Date()
   const date=d.getDate()+"/"+d.getMonth()+"/"+d.getFullYear()+" time-"+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
-  const [search,setSearch]=useState("")
-  const [item,setItem]=useState("post")
+  
+  
+  
+const {search}= useLocation()
+  const {id_}=queryString.parse(search );
   
   
   const name=localStorage.getItem("name")
@@ -18,7 +21,6 @@ const d=new Date()
   const id=localStorage.getItem("id")
 
   const [posts,setPosts]=useState([])
-  const [people,setPeople]=useState([])
   const logout=()=>{
     localStorage.removeItem("name")
     localStorage.removeItem("id")
@@ -28,17 +30,16 @@ const d=new Date()
 
   const [liked,setLiked]=useState([])
   
-useEffect(()=>{
-  
-    axios.get("https://repeated-fir-promotion.glitch.me/search/"+search).then(response=>{
+  useEffect(()=>{
+    
+    axios.get("https://repeated-fir-promotion.glitch.me/newsfeed_i/"+id_).then(response=>{
       setPosts(response.data)
     })
-axios.get("https://repeated-fir-promotion.glitch.me/search_person/"+search).then(response=>{
-      setPeople(response.data)
-    })
-    
-    
 })
+  
+const load=(a,b)=>{
+  window.location.replace(`/#/Other?_name_=${a}&_id_=${b}`)
+}
   
   
   const like=(e)=>{
@@ -65,58 +66,64 @@ const share=(e,b)=>{
 }
 
 
+const book=(a,b)=>{
+  axios.post("https://repeated-fir-promotion.glitch.me/bookmark",{id,_id_:a,name:b}).then(response=>{
+    
+    alert(response.data)
+  })
+  
+  
+}
+
+
+
+
+
+
   
   if(localStorage.getItem("name")===null && localStorage.getItem("id")===null){
     return <Redirect to="/Login" />
   }
   else{
   return(
-    <>
+    <div>
   
   <nav id="bar">
 <center>
 <button onClick={logout} id="btn-2">log out</button>
 </center>
   </nav>
-  <br/><br/><br/><br/><span id="head">search {item}</span>
-  <select id="item" onChange={(e)=>setItem(e.target.value)}>
-  <option>post</option>
-  <option>people</option>
-  </select>&nbsp;
-  <input type="search" onChange={(e)=>setSearch(e.target.value)} id="search-in" placeholder="search"/>
-
+  <br/><br/><br/><span id="head">home</span>
   
   <div id="bar2">
   <span id="white" class="far fa-times-circle" onClick={hide}></span>
   <br/><br/><br/>
   {liked.map(res=>
   <div>
-  <Link id="b" to={`/Other?_name_=${res.name}&_id_=${res.id}`}>{res.name}</Link>&nbsp;&nbsp;&nbsp;<span id="like2" class="fa fa-heart"></span><br/>
+  <Link onClick={()=>load(res.name,res.id)} id="b" to={`/Other?_name_=${res.name}&_id_=${res.id}`}>{res.name}</Link>&nbsp;&nbsp;&nbsp;<span id="like2" class="fa fa-heart"></span><br/>
   </div>
   )}
-  
   </div>
    <br />
     <br/>
   <br/><br/>
-  
- {item==="post"?<div>
-   {posts.map(record=>
+  {posts.map(record=>
 
   <div key={record._id}>
   <div id={record._id}/>
   <br/>
    <div id="post">
-  <b id="click"> <Link id="b" to={`/Other?_name_=${record.name}&_id_=${record.id}`}>{record.name}</Link></b>
+  <b id="click"> <Link id="b" onClick={()=>load(record.name,record.id)} to={`/Other?_name_=${record.name}&_id_=${record.id}`}>{record.name}</Link></b>
 <span id="date">{record.date}</span>
    <div id="post-in">
 {record.share===""?<div>
+ 
    <ReactHashtag renderHashtag={(hashtagValue) => (
-                <span className="hashtag">{hashtagValue}&nbsp;</span>
+                <span className="hashtag">{hashtagValue}</span>
             )}>
-          {record.post}
+        {record.post}
    </ReactHashtag>
-   
+  
    {record.md===""?<br/>:<div id="md"><ReactMarkdown>{record.md}</ReactMarkdown></div>}
    </div>:<div>
    <div id="shared">
@@ -138,29 +145,19 @@ const share=(e,b)=>{
   
 <Link class="fa fa-comment" id="comment" to={`/Comment?_id_=${record._id}`}></Link>
 
-<i class="far fa-bookmark" id="comment"></i>
+<i class="far fa-bookmark" onClick={()=>book(record._id,record.name)} id="comment"></i>
 
 {record.share.id===id || record.id===id || JSON.stringify(record.share).includes(record.share.id)?<span></span>:<i class="fa fa-share" id="comment"onClick={()=>share(record)}></i>}
 
 
-{JSON.stringify(record.like).includes(id)?<span id="like" onClick={()=>like(record._id)} class="fa fa-heart"></span>:<span id="like_w" onClick={()=>like(record._id)} class="far fa-heart"></span>}
+{JSON.stringify(record.like).includes(id)?<span id="like" onClick={()=>like(record._id)} class="fa fa-heart"></span>:<span id="like_w" onClick={()=>like(record._id)} class="fa fa-heart-o"></span>}
 &nbsp;&nbsp;<span id="date" onClick={()=>letliked(record.like)}>{record.like.length}</span>
 
 
 
  </div>
  </div>
-  )}</div>:<div>
-   {people.map(record=>
-   
-   <div>
-   <b><Link id="b" to={`/Other?_name_=${record.name}&_id_=${record._id}`}>{record.name}</Link></b>
-   </div>
-  )  }
-   
-   
-   </div>
- }
+  )}
  <br />
     <br/>
   <br/>
@@ -171,9 +168,9 @@ const share=(e,b)=>{
   
  
 
-    </>
+    </div>
     )
   }
 }
 
-export default Projects
+export default Page
