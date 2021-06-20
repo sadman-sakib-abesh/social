@@ -25,7 +25,7 @@ app.use(bodyparser.urlencoded({ extended: true }));
 
 
 const mongo=require("mongodb");
-const url="mongodb+srv://admin_Abesh:PlGWD1AsxDkSvF18@cluster0.fpqk3.mongodb.net?retryWrites=true&w=majority";
+const url="url";
 
 
 mongo.MongoClient.connect(url,{ useUnifiedTopology: true },(error,db)=>{
@@ -71,15 +71,15 @@ var transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
     auth: {
-    user:process.env.GMAIL_USER || "noreply.businesspoint@gmail.com",
-    pass:process.env.USER_PASS || "20_21<point>"
+    user:process.env.GMAIL_USER,
+    pass:process.env.USER_PASS
   }
 });
   
   
   
 var mailOptions = {
-  from:process.env.GMAIL_USER || "noreply.businesspoint@gmail.com",
+  from:process.env.GMAIL_USER,
   to:process.env.RECEIVE_USER || req.body.email,                
   subject:"Business Point Signup",
   html:`<h2>Congratulations ${req.body.name} !!!</h2><br/>Recently you signed up in business point using this email. Is this you? If not then reply to this email and we will delete the account.<br/><br/> CEO,Business Point<br/><br/><a href='#'>businesspoint.com</a>`
@@ -164,15 +164,15 @@ var transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user:process.env.GMAIL_USER || "noreply.businesspoint@gmail.com",
-    pass:process.env.USER_PASS || "20_21<point>"
+    user:process.env.GMAIL_USER,
+    pass:process.env.USER_PASS
   }
 });
   
   
   
 var mailOptions = {
-  from:process.env.GMAIL_USER || "noreply.businesspoint@gmail.com",
+  from:process.env.GMAIL_USER ,
   to:process.env.RECEIVE_USER || req.body.email,                
   subject:"otp businesspoint",
   html:`<h1 style="backgroundColor:#c0c0c0;border:2px solid black;"> OTP-${sessionStorage.getItem("otp")}</h1><br /><br />
